@@ -23,4 +23,4 @@ def load( request, idef ):
 	html += '</ul>'
 
 	return HttpResponse( html )
-	
+
