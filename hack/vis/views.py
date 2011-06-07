@@ -36,8 +36,12 @@ def data(request):
     lonMin = -5
     lonDelta = 30
 
-    start = request.REQUEST['start']
-    end = request.REQUEST['end']
+    start = request.REQUEST['start'].rjust(4,'0')
+    if len(start) == 4:
+        start += '-01-01'
+    end = request.REQUEST['end'].rjust(4,'0')
+    if len(end) == 4:
+        end += '-01-01'
     callback = request.REQUEST['callback']
     ##q = request.REQUEST['q'] <- kwerenda (np. 'mozart beethoven')
 

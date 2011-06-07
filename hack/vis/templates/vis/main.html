@@ -2,10 +2,10 @@
 <html lang="en">
     <head>
         <meta charset="utf-8"/>
+        <meta name="viewport" content="width=820" />
         <title>Europeana StatBrowser</title>
-        <link href="static/css/main.css" type="text/css"/>
-        <script src="http://maps.google.com/maps?file=api&v=2&key=ABQIAAAASI0kCI-azC8RgbOZzWc3VRRarOQe_TKf_51Omf6UUSOFm7EABRRhO0PO4nBAO9FCmVDuowVwROLo3w"
-            type="text/javascript"></script>
+        <link href="static/css/main.css" rel="stylesheet" type="text/css"/>
+        <script src="http://maps.google.com/maps?file=api&v=2&key=ABQIAAAASI0kCI-azC8RgbOZzWc3VRRarOQe_TKf_51Omf6UUSOFm7EABRRhO0PO4nBAO9FCmVDuowVwROLo3w"></script>
         <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
         <script src="http://timemap.googlecode.com/svn/tags/2.0/lib/mxn/mxn.js?(google)"></script>
@@ -14,24 +14,11 @@
         <script src="http://timemap.googlecode.com/svn/tags/2.0/src/timemap.js"></script>
         <script src="http://timemap.googlecode.com/svn/tags/2.0/src/loaders/json.js"></script>
         <script src="http://timemap.googlecode.com/svn/tags/2.0/src/loaders/progressive.js"></script>
-    </head>
-    <body>
-        <form>
-            <label for="q">Keywords:</label>
-            <input type="text" id="q" />
-            <input type="submit">
-        </form>
-        <div>
-            <div id="timemap">
-                <div id="timeline" style="height: 200px;"></div>
-                <div id="map" style="height: 400px;"></div>
-            </div>
-        </div>
-        <noscript>
-        This page uses Javascript to show you a Timeline. Please enable Javascript in your browser to see the full page. Thank you.
-        </noscript>
+
         <script>
             var tm;
+            var nowDate = new Date();
+            var nowStr = nowDate.getFullYear() + '-' + nowDate.getMonth() + '-' + nowDate.getDate();
             $(function() {
                 // make a custom map style
                 var styledMapType = new google.maps.StyledMapType([
@@ -55,8 +42,8 @@
                 });
 
                 tm = TimeMap.init({
-                    mapId: "map",               // Id of map div element (required)
-                    timelineId: "timeline",     // Id of timeline div element (required)
+                    mapId: "map",
+                    timelineId: "timeline",
                     options: {
                         eventIconPath: "static/images/"
                     },
@@ -65,16 +52,12 @@
                             title: "Progressive Dataset",
                             type: "progressive",
                             options: {
-                                // Data to be loaded in JSON from a remote URL
                                 type: "json",
-                                // url with start/end placeholders
                                 url: "data?start=[start]&end=[end]&callback=?",
                                 start: "2000-01-01",
-                                // lower cutoff date for data
                                 dataMinDate: "0-01-01",
-                                // four months in milliseconds
+                                dataMaxDate: nowStr,
                                 interval: 30 * 31536000000,
-                                // function to turn date into string appropriate for service
                                 formatDate: function(d) {
                                     return TimeMap.util.formatDate(d, 1);
                                 }
@@ -87,47 +70,65 @@
                     ]
                 });
 
-                /*tm = TimeMap.init({
-                    mapId: "map",               // Id of map div element (required)
-                    timelineId: "timeline",     // Id of timeline div element (required)
-                    options: {
-                        eventIconPath: "../images/"
-                    },
-                    datasets: [
-                        {
-                            id: "artists",
-                            title: "Artists",
-                            theme: "orange",
-                            // note that the lines below are now the preferred syntax
-                            type: "basic",
-                            options: {
-                                // Data to be loaded in JSON from a remote URL
-                                type: "json",
-                                // url with start/end placeholders
-                                url: "data?start=[start]&end=[end]&callback=?",
-                                start: "2000-01-01",
-                                // lower cutoff date for data
-                                dataMinDate: "1990-10-15",
-                                // four months in milliseconds
-                                interval: 10368000000,
-                                // function to turn date into string appropriate for service
-                                formatDate: function(d) {
-                                    return TimeMap.util.formatDate(d, 1);
-                                }
-                            }
-                        }
-                    ],
-                    bandIntervals: [
-                        Timeline.DateTime.DECADE,
-                        Timeline.DateTime.CENTURY
-                    ]
-                });
+                //var gmap = tm.getNativeMap();
+                //gmap.mapTypes.set("white", styledMapType);
+                //gmap.setMapTypeId("white");
 
-                // set the map to our custom style
-                var gmap = tm.getNativeMap();
-                gmap.mapTypes.set("white", styledMapType);
-                gmap.setMapTypeId("white");*/
+                $("#play").click(function() {
+                    play();
+                })
             });
+
+            function centerTimeline(year) {
+                tm.scrollToDate(new Date(year, 0, 1), false, true);
+            }
+
+            function step(year) {
+                year = parseInt(year)
+                tm.scrollToDate(new Date(year, 0, 1), false, false);
+                if (year < nowDate.getFullYear())
+                    setTimeout("step('"+(year+10)+"')", 100);
+            }
+
+            function play() {
+                tm.scrollToDate(new Date(100, 0, 1), false, false);
+                step('100')
+            }
         </script>
+    </head>
+    <body>
+        <section id="wrapper">
+            <header>
+                <h1>Europeana StatBrowser</h1>
+            </header>
+            <div style="width: 150px; float: right;">
+                <button id="play" value="Play">Play</button>
+            </div>
+            <form style="margin-left: 15px;">
+                <label for="q">Keywords:</label>
+                <input type="text" id="q" />
+                <input type="submit">
+            </form>
+            <div>
+                <div id="timemap" style="width: 600px;">
+                    <div style="width: 100%">
+                        <table style="text-align: center; width: 100%">
+                            <tr>
+                                <td><a href="javascript:centerTimeline(0);">0 AD</a></td>
+                                <td><a href="javascript:centerTimeline(500);">500 AD</a></td>
+                                <td><a href="javascript:centerTimeline(1000);">1000 AD</a></td>
+                                <td><a href="javascript:centerTimeline(1500);">1500 AD</a></td>
+                                <td><a href="javascript:centerTimeline(2000);">2000 AD</a></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="timeline" style="width: 600px; height: 200px;"></div>
+                    <div id="map" style="width: 600px; height: 400px;"></div>
+                </div>
+            </div>
+            <noscript>
+            This page uses Javascript to show you a Timeline and Map. Please enable Javascript in your browser to see the full page. Thank you.
+            </noscript>
+        </section>
     </body>
 </html>
