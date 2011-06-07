@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <title>Europeana StatBrowser</title>
+        <link href="static/css/main.css" type="text/css"/>
+        <script src="http://maps.google.com/maps?file=api&v=2&key=ABQIAAAASI0kCI-azC8RgbOZzWc3VRRarOQe_TKf_51Omf6UUSOFm7EABRRhO0PO4nBAO9FCmVDuowVwROLo3w"
+            type="text/javascript"></script>
+        <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+        <script src="http://timemap.googlecode.com/svn/tags/2.0/lib/mxn/mxn.js?(google)"></script>
+        <!--<script src="static/js/timeline-2.3.0.js"></script>-->
+        <script src="http://static.simile.mit.edu/timeline/api-2.3.0/timeline-api.js?bundle=true"></script>
+        <script src="http://timemap.googlecode.com/svn/tags/2.0/src/timemap.js"></script>
+        <script src="http://timemap.googlecode.com/svn/tags/2.0/src/loaders/json.js"></script>
+        <script src="http://timemap.googlecode.com/svn/tags/2.0/src/loaders/progressive.js"></script>
+    </head>
+    <body>
+        <form>
+            <label for="q">Keywords:</label>
+            <input type="text" id="q" />
+            <input type="submit">
+        </form>
+        <div>
+            <div id="timemap">
+                <div id="timeline" style="height: 200px;"></div>
+                <div id="map" style="height: 400px;"></div>
+            </div>
+        </div>
+        <noscript>
+        This page uses Javascript to show you a Timeline. Please enable Javascript in your browser to see the full page. Thank you.
+        </noscript>
+        <script>
+            var tm;
+            $(function() {
+                // make a custom map style
+                var styledMapType = new google.maps.StyledMapType([
+                    {
+                        featureType: "water",
+                        elementType: "all",
+                        stylers: [
+                            { saturation: 0 },
+                            { lightness: 100 }
+                        ]
+                    },
+                    {
+                        featureType: "all",
+                        elementType: "all",
+                        stylers: [
+                            { saturation: -100 }
+                        ]
+                    }
+                ], {
+                    name: "white"
+                });
+
+                tm = TimeMap.init({
+                    mapId: "map",               // Id of map div element (required)
+                    timelineId: "timeline",     // Id of timeline div element (required)
+                    options: {
+                        eventIconPath: "static/images/"
+                    },
+                    datasets: [
+                        {
+                            title: "Progressive Dataset",
+                            type: "progressive",
+                            options: {
+                                // Data to be loaded in JSON from a remote URL
+                                type: "json",
+                                // url with start/end placeholders
+                                url: "data?start=[start]&end=[end]&callback=?",
+                                start: "2000-01-01",
+                                // lower cutoff date for data
+                                dataMinDate: "0-01-01",
+                                // four months in milliseconds
+                                interval: 30 * 31536000000,
+                                // function to turn date into string appropriate for service
+                                formatDate: function(d) {
+                                    return TimeMap.util.formatDate(d, 1);
+                                }
+                            }
+                        }
+                    ],
+                     bandIntervals: [
+                        Timeline.DateTime.DECADE,
+                        Timeline.DateTime.CENTURY
+                    ]
+                });
+
+                /*tm = TimeMap.init({
+                    mapId: "map",               // Id of map div element (required)
+                    timelineId: "timeline",     // Id of timeline div element (required)
+                    options: {
+                        eventIconPath: "../images/"
+                    },
+                    datasets: [
+                        {
+                            id: "artists",
+                            title: "Artists",
+                            theme: "orange",
+                            // note that the lines below are now the preferred syntax
+                            type: "basic",
+                            options: {
+                                // Data to be loaded in JSON from a remote URL
+                                type: "json",
+                                // url with start/end placeholders
+                                url: "data?start=[start]&end=[end]&callback=?",
+                                start: "2000-01-01",
+                                // lower cutoff date for data
+                                dataMinDate: "1990-10-15",
+                                // four months in milliseconds
+                                interval: 10368000000,
+                                // function to turn date into string appropriate for service
+                                formatDate: function(d) {
+                                    return TimeMap.util.formatDate(d, 1);
+                                }
+                            }
+                        }
+                    ],
+                    bandIntervals: [
+                        Timeline.DateTime.DECADE,
+                        Timeline.DateTime.CENTURY
+                    ]
+                });
+
+                // set the map to our custom style
+                var gmap = tm.getNativeMap();
+                gmap.mapTypes.set("white", styledMapType);
+                gmap.setMapTypeId("white");*/
+            });
+        </script>
+    </body>
+</html>
