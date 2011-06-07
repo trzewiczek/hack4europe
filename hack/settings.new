@@ -1,0 +1,6 @@
+# Janek settings for hack project.
+#    'Janek.contrib.staticfiles.finders.DefaultStorageFinder',
+#     'Janek.template.loaders.eggs.Loader',
+# Janek settings for hack project.
+#    'Janek.contrib.staticfiles.finders.DefaultStorageFinder',
+#     'Janek.template.loaders.eggs.Loader',
