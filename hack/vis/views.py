@@ -7,16 +7,6 @@ import simplejson as json
 from django.shortcuts import render_to_response
 
 
-rights_list = [ "Th\u00fcringer Universit\u00e4ts- und Landesbibliothek, Jena",
-            "ddrbildarchiv.de\u00ae",
-            "Deutsches Dokumentationszentrum f\u00fcr Kunstgeschichte - Bildarchiv Foto Marburg [Resource]",
-            "Th\u00fcringer Universit\u00e4ts- und Landesbibliothek, Jena"
-            "Ok\u00e4nd",
-            "Public Domain",
-            "Deutsche Fotothek",
-            "http://creativecommons.org/publicdomain/mark/1.0/"
-]
-
 def main(request):
     return render_to_response('vis/main.html')
 
@@ -63,8 +53,13 @@ def info(request, id):
 
 
 def rights(request):
-    colors = ['red', 'blue', 'green', 'yellow', 'purple', 'cyan', 'brown', 'navy']
+    r_list = json.loads( open('/home/mikus/Projekty/hack4europe/statbrowser/hack/vis/static/json/'+request.session.get('collection_name', 'mozart')+'.json').read() )
+    rights_list = set()
+    for r in r_list:
+        rights_list.add( r )
+
+    colors = ['red', 'blue', 'green', 'yellow', 'purple']
     out = []
     for i in range(len(rights_list)):
-        out.append({'id':"%d" % i, 'title': "title %s" % rights_list[i], 'color': "%s" % colors[i]})
+        out.append({'id':"%d" % i, 'title': "title %s" % rights_list[i], 'color': "%s" % colors[i%len(colors)]})
     return HttpResponse(json.dumps(out), mimetype="application/json")
