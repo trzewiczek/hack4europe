@@ -7,6 +7,16 @@ import simplejson as json
 from django.shortcuts import render_to_response
 
 
+rights = [ "Th\u00fcringer Universit\u00e4ts- und Landesbibliothek, Jena",
+            "ddrbildarchiv.de\u00ae",
+            "Deutsches Dokumentationszentrum f\u00fcr Kunstgeschichte - Bildarchiv Foto Marburg [Resource]",
+            "Th\u00fcringer Universit\u00e4ts- und Landesbibliothek, Jena"
+            "Ok\u00e4nd",
+            "Public Domain",
+            "Deutsche Fotothek",
+            "http://creativecommons.org/publicdomain/mark/1.0/"
+]
+
 def main(request):
     return render_to_response('vis/main.html')
 
@@ -28,6 +38,7 @@ def data(request, id):
 
     data = json.loads( open('/home/mikus/Projekty/hack4europe/statbrowser/hack/vis/static/json/mozart.json').read() )
     data = [ d for d in data if d.has_key('start') and d['start'] > start.split('-')[0] and d['start'] < end.split('-')[0] ]
+    data = [ d for d in data if d.has_key('rights') and d['rights'] == rights[id] ]
 
     start = datetime.strptime(start, '%Y-%m-%d')
     end = datetime.strptime(end, '%Y-%m-%d')
@@ -46,16 +57,7 @@ def info(request, id):
 
 def rights(request):
     colors = ['red', 'blue', 'green', 'yellow', 'purple', 'cyan', 'brown', 'navy']
-    rights = [ "Th\u00fcringer Universit\u00e4ts- und Landesbibliothek, Jena",
-                "ddrbildarchiv.de\u00ae",
-                "Deutsches Dokumentationszentrum f\u00fcr Kunstgeschichte - Bildarchiv Foto Marburg [Resource]",
-                "Th\u00fcringer Universit\u00e4ts- und Landesbibliothek, Jena"
-                "Ok\u00e4nd",
-                "Public Domain",
-                "Deutsche Fotothek",
-                "http://creativecommons.org/publicdomain/mark/1.0/"
-    ]
     out = []
     for i in range(len(rights)):
-        out.append({'id':"right%d" % i, 'title': "title %d" % i, 'color': "%s" % ( i, rights[i], color[i] )})
+        out.append({'id':"%d" % i, 'title': "title %s" % i, 'color': "%s" % ( i, rights[i], color[i] )})
     return HttpResponse(json.dumps(out), mimetype="application/json")
