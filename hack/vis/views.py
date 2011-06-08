@@ -11,6 +11,7 @@ def main(request):
     return render_to_response('vis/main.html')
 
 def data(request, id):
+
     latMin = 40
     latDelta = 20
     lonMin = -5
@@ -29,9 +30,12 @@ def data(request, id):
     end = datetime.strptime(end, '%Y-%m-%d')
     delta = (end - start).total_seconds()
 
+    data = json.loads( open('static/mozart.json').read() )
+    data = [ d for d in data if d['start'] > start.split('-')[0] and d['start'] < end.split('-')[0] ]
+
     out = []
-    for i in range(3):
-        out.append('{title:"Item %d", start:"%s", point: {lat: %d, lon: %d}, options: { description: "opis", infoUrl: "info/id"}}' % (i, (start + timedelta(seconds = random.random() * delta)).isoformat(), latMin + random.random() * latDelta, lonMin + random.random() * lonDelta))
+    for i in data:
+        out.append('{title:"Item %d", start:"%s", point: {lat: %d, lon: %d}, options: { description: "opis", infoUrl: "info/id"}}' % (data['title'], data['start'], data['point']['lat'], data['point']['lon']))
 
     return HttpResponse('%s([%s])' % (callback, ','.join(out)))
 
@@ -42,6 +46,6 @@ def info(request, id):
 def rights(request):
     colors = ['red', 'blue', 'green', 'yellow', 'cyan', 'pink', 'brown', 'navy', 'orange', 'lightgray']
     out = []
-    for i in range(5):
+    for i in range(10):
         out.append({'id':"right%d" % i, 'title': "title %d" % i, 'color': "%s" % colors[i]})
     return HttpResponse(json.dumps(out), mimetype="application/json")
