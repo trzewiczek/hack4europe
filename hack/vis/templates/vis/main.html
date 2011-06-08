@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=820" />
-        <title>Europeana StatBrowser</title>
+        <title>Europeana Copyrights Timemap</title>
         <link href="static/css/main.css" rel="stylesheet" type="text/css"/>
         <script src="http://maps.google.com/maps?file=api&v=2&key=ABQIAAAASI0kCI-azC8RgbOZzWc3VRRarOQe_TKf_51Omf6UUSOFm7EABRRhO0PO4nBAO9FCmVDuowVwROLo3w"></script>
         <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
@@ -131,8 +131,11 @@
                 year = parseInt(year);
                 var date = new Date(Date.parse(year+'-01-01'));
                 tm.scrollToDate(date, false, false);
-                if (year < nowDate.getFullYear() && playing)
-                    setTimeout("step('"+(year+1)+"')", 10);
+                if (playing)
+                    if (year < nowDate.getFullYear())
+                        setTimeout("step('"+(year+3)+"')", 100);
+                    else
+                        play();
             }
 
             function play() {
@@ -159,7 +162,8 @@
     <body>
         <section id="wrapper">
             <header>
-                <h1>Europeana StatBrowser</h1>
+                <h1>Europeana Copyrights Timemap</h1>
+                <h2>{{ cn }}</h2>
             </header>
             <div style="width: 150px; float: right;">
                 <button id="play" value="Play">Play</button>
@@ -172,7 +176,7 @@
             </div>
             <form style="margin-left: 15px;">
                 <label for="q">Keywords:</label>
-                <input type="text" id="q" />
+                <input type="text" id="q" name="cn" />
                 <input type="submit">
             </form>
             <div>
@@ -188,7 +192,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div id="timeline" style="width: 600px; height: 200px;"></div>
+                    <div id="timeline" style="width: 600px; height: 300px;"></div>
                     <div id="map" style="width: 600px; height: 400px;"></div>
                 </div>
             </div>

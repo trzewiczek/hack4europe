@@ -12,7 +12,7 @@ def main(request):
     except:
         cn = 'mozart'
     request.session['collection_name'] = cn
-    return render_to_response('vis/main.html')
+    return render_to_response('vis/main.html', {'cn' : cn})
 
 def data(request, id):
 

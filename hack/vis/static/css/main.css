@@ -45,7 +45,9 @@ footer > * {
 }
 
 #rights {
-    overflow: scroll;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 700px;
 }
 
 .rights-item {
@@ -88,7 +90,7 @@ div#timemap {
 
 div#timeline{
     width: 100%;
-    height: 200px;
+    height: 400px;
     font-size: 12px;
     background: #CCCCCC;
 }
