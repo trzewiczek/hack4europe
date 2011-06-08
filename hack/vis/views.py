@@ -30,7 +30,7 @@ def load( request, idef ):
 def main(request):
     return render_to_response('vis/main.html')
 
-def data(request):
+def data(request, id):
     latMin = 40
     latDelta = 20
     lonMin = -5
@@ -50,7 +50,7 @@ def data(request):
     delta = (end - start).total_seconds()
 
     out = []
-    for i in range(10):
+    for i in range(3):
         out.append('{title:"Item %d", start:"%s", point: {lat: %d, lon: %d}, options: { description: "opis", infoUrl: "info/id"}}' % (i, (start + timedelta(seconds = random.random() * delta)).isoformat(), latMin + random.random() * latDelta, lonMin + random.random() * lonDelta))
 
     return HttpResponse('%s([%s])' % (callback, ','.join(out)))
@@ -58,3 +58,10 @@ def data(request):
 def info(request, id):
     out = '<div><h4>name</h4><p>detail description</p></div>'
     return HttpResponse(out)
+
+def rights(request):
+    colors = ['red', 'blue', 'green', 'yellow', 'cyan', 'pink', 'brown', 'navy', 'orange', 'lightgray']
+    out = []
+    for i in range(10):
+        out.append({'id':"right%d" % i, 'title': "title %d" % i, 'color': "%s" % colors[i]})
+    return HttpResponse(json.dumps(out), mimetype="application/json")

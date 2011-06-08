@@ -19,7 +19,31 @@
             var tm;
             var nowDate = new Date();
             var nowStr = nowDate.getFullYear() + '-' + nowDate.getMonth() + '-' + nowDate.getDate();
+            var rights = [];
             $(function() {
+
+                $.getJSON('rights', function(data) {
+                    var items = [];
+
+                    $.each(data, function(index, item) {
+                        rights.push(item);
+                        items.push('<li class="rights-item" style="background-color: ' + item.color + ';"><input id="' + item.id + '" type="checkbox" onclick="toggleDataset(\''+item.id+'\', this.checked);" checked/><label for="' + item.id +'">' + item.title + '</label></li><br/>');
+                    });
+
+                    $('<ul/>', {
+                        'class': 'rights-list',
+                        html: items.join('')
+                    }).appendTo('#rights');
+
+                    initMap();
+                });
+
+                $("#play").click(function() {
+                    play();
+                });
+            });
+
+            function initMap() {
                 // make a custom map style
                 var styledMapType = new google.maps.StyledMapType([
                     {
@@ -41,29 +65,34 @@
                     name: "white"
                 });
 
+                var datasets = [];
+                $.each(rights, function(index, item) {
+                    datasets.push({
+                        id: item.id,
+                        title: item.title,
+                        type: "progressive",
+                        theme: item.color,
+                        options: {
+                            type: "json",
+                            url: "data/"+item.id+"?start=[start]&end=[end]&callback=?",
+                            start: "2000-01-01",
+                            dataMinDate: "0-01-01",
+                            dataMaxDate: nowStr,
+                            interval: 30 * 31536000000,
+                            formatDate: function(d) {
+                                return TimeMap.util.formatDate(d, 1);
+                            }
+                        }
+                    });
+                });
+
                 tm = TimeMap.init({
                     mapId: "map",
                     timelineId: "timeline",
                     options: {
                         eventIconPath: "static/images/"
                     },
-                    datasets: [
-                        {
-                            title: "Progressive Dataset",
-                            type: "progressive",
-                            options: {
-                                type: "json",
-                                url: "data?start=[start]&end=[end]&callback=?",
-                                start: "2000-01-01",
-                                dataMinDate: "0-01-01",
-                                dataMaxDate: nowStr,
-                                interval: 30 * 31536000000,
-                                formatDate: function(d) {
-                                    return TimeMap.util.formatDate(d, 1);
-                                }
-                            }
-                        }
-                    ],
+                    datasets: datasets,
                      bandIntervals: [
                         Timeline.DateTime.DECADE,
                         Timeline.DateTime.CENTURY
@@ -73,11 +102,7 @@
                 //var gmap = tm.getNativeMap();
                 //gmap.mapTypes.set("white", styledMapType);
                 //gmap.setMapTypeId("white");
-
-                $("#play").click(function() {
-                    play();
-                })
-            });
+            }
 
             function centerTimeline(year) {
                 //var date = new Date(Date.parse(year+'-01-01'));
@@ -96,6 +121,14 @@
                 tm.scrollToDate(new Date(100, 0, 1), false, false);
                 step('100')
             }
+
+            function toggleDataset(dsid, toggle) {
+                if (toggle) {
+                    tm.datasets[dsid].show();
+                } else {
+                    tm.datasets[dsid].hide();
+                }
+            }
         </script>
     </head>
     <body>
@@ -105,6 +138,12 @@
             </header>
             <div style="width: 150px; float: right;">
                 <button id="play" value="Play">Play</button>
+                <section>
+                    <header>
+                        <h3>Rights</h3>
+                    </header>
+                    <div id="rights"></div>
+                </section>
             </div>
             <form style="margin-left: 15px;">
                 <label for="q">Keywords:</label>

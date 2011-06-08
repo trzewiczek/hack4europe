@@ -44,6 +44,13 @@ footer > * {
   color: #999;
 }
 
+.rights-item {
+    list-style-type: none;
+    position: relative;
+    left: -20px;
+    padding:  5px;
+}
+
 
 /*--------------------------------*/
 
