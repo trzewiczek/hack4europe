@@ -44,13 +44,26 @@ footer > * {
   color: #999;
 }
 
+#rights {
+    overflow: scroll;
+}
+
 .rights-item {
     list-style-type: none;
     position: relative;
-    left: -20px;
+    left: -40px;
     padding:  5px;
+    width: 120px;
 }
 
+.rights-item input {
+    padding: 5px;
+}
+
+.rights-item label {
+    font-size: 10px;
+    line-height: 50%;
+}
 
 /*--------------------------------*/
 

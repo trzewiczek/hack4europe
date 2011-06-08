@@ -132,15 +132,15 @@
                 var date = new Date(Date.parse(year+'-01-01'));
                 tm.scrollToDate(date, false, false);
                 if (year < nowDate.getFullYear() && playing)
-                    setTimeout("step('"+(year+1)+"')", 100);
+                    setTimeout("step('"+(year+1)+"')", 10);
             }
 
             function play() {
                 playing = !playing;
                 if (playing) {
                     $('#play').text('Stop');
-                    tm.scrollToDate(new Date(100, 0, 1), false, false);
-                    step('100');
+                    tm.scrollToDate(new Date(1000, 0, 1), false, false);
+                    step('1000');
                 }
                 else
                     $('#play').text('Play');
