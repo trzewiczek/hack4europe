@@ -25,8 +25,8 @@ def data(request, id):
         end += '-01-01'
     callback = request.REQUEST['callback']
     ##q = request.REQUEST['q'] <- kwerenda (np. 'mozart beethoven')
-
-    data = json.loads( open('/home/mikus/Projekty/hack4europe/statbrowser/hack/vis/static/json/mozart.json').read() )
+    data = json.loads( open('/home/mikus/Projekty/hack4europe/statbrowser/hack/vis/static/json/'+request.session.get('collection_name', 'mozart')+'.json').read() )
+#    data = json.loads( open('/home/mikus/Projekty/hack4europe/statbrowser/hack/vis/static/json/mozart.json').read() )
     data = [ d for d in data if d.has_key('start') and d['start'] > start.split('-')[0] and d['start'] < end.split('-')[0] ]
     data = [ d for d in data if d.has_key('rights') and d['rights'] == rights_list[int(id)] ]
 
