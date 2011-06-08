@@ -7,7 +7,7 @@ import simplejson as json
 from django.shortcuts import render_to_response
 
 
-rights = [ "Th\u00fcringer Universit\u00e4ts- und Landesbibliothek, Jena",
+rights_list = [ "Th\u00fcringer Universit\u00e4ts- und Landesbibliothek, Jena",
             "ddrbildarchiv.de\u00ae",
             "Deutsches Dokumentationszentrum f\u00fcr Kunstgeschichte - Bildarchiv Foto Marburg [Resource]",
             "Th\u00fcringer Universit\u00e4ts- und Landesbibliothek, Jena"
@@ -38,7 +38,7 @@ def data(request, id):
 
     data = json.loads( open('/home/mikus/Projekty/hack4europe/statbrowser/hack/vis/static/json/mozart.json').read() )
     data = [ d for d in data if d.has_key('start') and d['start'] > start.split('-')[0] and d['start'] < end.split('-')[0] ]
-    data = [ d for d in data if d.has_key('rights') and d['rights'] == rights[id] ]
+    data = [ d for d in data if d.has_key('rights') and d['rights'] == rights_list[int(id)] ]
 
     start = datetime.strptime(start, '%Y-%m-%d')
     end = datetime.strptime(end, '%Y-%m-%d')
@@ -47,17 +47,24 @@ def data(request, id):
 
     out = []
     for i in data:
-        out.append('{title:"%s", start:"%s", point: {lat: %d, lon: %d}, options: { description: "opis", infoUrl: "%s"}}' % (i['title'], i['start'], float(i['point']['lat']), float(i['point']['lon'], i['options']['infoUrl'])))
+        out.append('{title:"%s", start:"%s", point: {lat: %d, lon: %d}, options: { description: "opis", infoUrl: "info/%s"}}' % (i['title'], i['start'], float(i['point']['lat']), float(i['point']['lon']), i['options']['infoUrl']))
 
     return HttpResponse('%s([%s])' % (callback, ','.join(out)))
 
+import urllib
+
 def info(request, id):
-    out = '<div><h4>name</h4><p>detail description</p></div>'
+    out = ''
+    filehandle = urllib.urlopen(id)
+    for lines in filehandle.readlines():
+        out += lines
+    filehandle.close()
     return HttpResponse(out)
+
 
 def rights(request):
     colors = ['red', 'blue', 'green', 'yellow', 'purple', 'cyan', 'brown', 'navy']
     out = []
-    for i in range(len(rights)):
-        out.append({'id':"%d" % i, 'title': "title %s" % i, 'color': "%s" % ( i, rights[i], color[i] )})
+    for i in range(len(rights_list)):
+        out.append({'id':"%d" % i, 'title': "title %s" % rights_list[i], 'color': "%s" % colors[i]})
     return HttpResponse(json.dumps(out), mimetype="application/json")
