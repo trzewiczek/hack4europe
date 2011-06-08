@@ -45,8 +45,17 @@ def info(request, id):
     return HttpResponse(out)
 
 def rights(request):
-    colors = ['red', 'blue', 'green', 'yellow', 'purple', 'cyan', 'brown', 'navy', 'orange', 'lightgray']
+    colors = ['red', 'blue', 'green', 'yellow', 'purple', 'cyan', 'brown', 'navy']
+    rights = [ "Th\u00fcringer Universit\u00e4ts- und Landesbibliothek, Jena",
+                "ddrbildarchiv.de\u00ae",
+                "Deutsches Dokumentationszentrum f\u00fcr Kunstgeschichte - Bildarchiv Foto Marburg [Resource]",
+                "Th\u00fcringer Universit\u00e4ts- und Landesbibliothek, Jena"
+                "Ok\u00e4nd",
+                "Public Domain",
+                "Deutsche Fotothek",
+                "http://creativecommons.org/publicdomain/mark/1.0/"
+    ]
     out = []
-    for i in range(10):
-        out.append({'id':"right%d" % i, 'title': "title %d" % i, 'color': "%s" % colors[i]})
+    for i in range(len(rights)):
+        out.append({'id':"right%d" % i, 'title': "title %d" % i, 'color': "%s" % ( i, rights[i], color[i] )})
     return HttpResponse(json.dumps(out), mimetype="application/json")
