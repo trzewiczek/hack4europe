@@ -26,16 +26,17 @@ def data(request, id):
     callback = request.REQUEST['callback']
     ##q = request.REQUEST['q'] <- kwerenda (np. 'mozart beethoven')
 
+    data = json.loads( open('/home/mikus/Projekty/hack4europe/statbrowser/hack/vis/static/json/mozart.json').read() )
+    data = [ d for d in data if d.has_key('start') and d['start'] > start.split('-')[0] and d['start'] < end.split('-')[0] ]
+
     start = datetime.strptime(start, '%Y-%m-%d')
     end = datetime.strptime(end, '%Y-%m-%d')
     delta = (end - start).total_seconds()
 
-    data = json.loads( open('static/mozart.json').read() )
-    data = [ d for d in data if d['start'] > start.split('-')[0] and d['start'] < end.split('-')[0] ]
 
     out = []
     for i in data:
-        out.append('{title:"Item %d", start:"%s", point: {lat: %d, lon: %d}, options: { description: "opis", infoUrl: "info/id"}}' % (data['title'], data['start'], data['point']['lat'], data['point']['lon']))
+        out.append('{title:"%s", start:"%s", point: {lat: %d, lon: %d}, options: { description: "opis", infoUrl: "info/id"}}' % (i['title'], i['start'], float(i['point']['lat']), float(i['point']['lon'])))
 
     return HttpResponse('%s([%s])' % (callback, ','.join(out)))
 
@@ -44,7 +45,7 @@ def info(request, id):
     return HttpResponse(out)
 
 def rights(request):
-    colors = ['red', 'blue', 'green', 'yellow', 'cyan', 'pink', 'brown', 'navy', 'orange', 'lightgray']
+    colors = ['red', 'blue', 'green', 'yellow', 'purple', 'cyan', 'brown', 'navy', 'orange', 'lightgray']
     out = []
     for i in range(10):
         out.append({'id':"right%d" % i, 'title': "title %d" % i, 'color': "%s" % colors[i]})
