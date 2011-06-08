@@ -14,6 +14,7 @@
         <script src="http://timemap.googlecode.com/svn/tags/2.0/src/timemap.js"></script>
         <script src="http://timemap.googlecode.com/svn/tags/2.0/src/loaders/json.js"></script>
         <script src="http://timemap.googlecode.com/svn/tags/2.0/src/loaders/progressive.js"></script>
+        <script src="http://timemap.googlecode.com/svn/tags/2.0/src/manipulation.js"></script>
 
         <script>
             var tm;
@@ -42,6 +43,20 @@
                     play();
                 });
             });
+
+            var progressive = TimeMap.loaders.progressive;
+            TimeMap.loaders.progressive = function(options) {
+                var loader = progressive(options);
+                var orgLoad = loader.load;
+                loader.load = function(dataset, callback, start, currBlock) {
+                    var modCallback = function(data) {
+                        callback(data);
+                        toggleDataset(dataset.opts.dataID, $("#"+dataset.opts.dataID).attr('checked') == 'checked');
+                    }
+                    orgLoad(dataset, modCallback, start, currBlock);
+                }
+                return loader;
+            }
 
             function initMap() {
                 // make a custom map style
@@ -73,6 +88,7 @@
                         type: "progressive",
                         theme: item.color,
                         options: {
+                            dataID: item.id,
                             type: "json",
                             url: "data/"+item.id+"?start=[start]&end=[end]&callback=?",
                             start: "2000-01-01",
@@ -109,17 +125,25 @@
                 tm.scrollToDate(year, false, true);
             }
 
+            var playing = false;
+
             function step(year) {
                 year = parseInt(year);
                 var date = new Date(Date.parse(year+'-01-01'));
                 tm.scrollToDate(date, false, false);
-                if (year < nowDate.getFullYear())
-                    setTimeout("step('"+(year+10)+"')", 100);
+                if (year < nowDate.getFullYear() && playing)
+                    setTimeout("step('"+(year+1)+"')", 100);
             }
 
             function play() {
-                tm.scrollToDate(new Date(100, 0, 1), false, false);
-                step('100')
+                playing = !playing;
+                if (playing) {
+                    $('#play').text('Stop');
+                    tm.scrollToDate(new Date(100, 0, 1), false, false);
+                    step('100');
+                }
+                else
+                    $('#play').text('Play');
             }
 
             function toggleDataset(dsid, toggle) {

@@ -42,6 +42,6 @@ def info(request, id):
 def rights(request):
     colors = ['red', 'blue', 'green', 'yellow', 'cyan', 'pink', 'brown', 'navy', 'orange', 'lightgray']
     out = []
-    for i in range(10):
+    for i in range(5):
         out.append({'id':"right%d" % i, 'title': "title %d" % i, 'color': "%s" % colors[i]})
     return HttpResponse(json.dumps(out), mimetype="application/json")
