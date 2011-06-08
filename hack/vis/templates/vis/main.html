@@ -80,12 +80,14 @@
             });
 
             function centerTimeline(year) {
-                tm.scrollToDate(new Date(year, 0, 1), false, true);
+                //var date = new Date(Date.parse(year+'-01-01'));
+                tm.scrollToDate(year, false, true);
             }
 
             function step(year) {
-                year = parseInt(year)
-                tm.scrollToDate(new Date(year, 0, 1), false, false);
+                year = parseInt(year);
+                var date = new Date(Date.parse(year+'-01-01'));
+                tm.scrollToDate(date, false, false);
                 if (year < nowDate.getFullYear())
                     setTimeout("step('"+(year+10)+"')", 100);
             }
@@ -114,11 +116,11 @@
                     <div style="width: 100%">
                         <table style="text-align: center; width: 100%">
                             <tr>
-                                <td><a href="javascript:centerTimeline(0);">0 AD</a></td>
-                                <td><a href="javascript:centerTimeline(500);">500 AD</a></td>
-                                <td><a href="javascript:centerTimeline(1000);">1000 AD</a></td>
-                                <td><a href="javascript:centerTimeline(1500);">1500 AD</a></td>
-                                <td><a href="javascript:centerTimeline(2000);">2000 AD</a></td>
+                                <td><a href="javascript:centerTimeline('1BC');">1 BC</a></td>
+                                <td><a href="javascript:centerTimeline('500AD');">500 AD</a></td>
+                                <td><a href="javascript:centerTimeline('1000AD');">1000 AD</a></td>
+                                <td><a href="javascript:centerTimeline('1500AD');">1500 AD</a></td>
+                                <td><a href="javascript:centerTimeline('2000AD');">2000 AD</a></td>
                             </tr>
                         </table>
                     </div>
