@@ -36,7 +36,7 @@ def data(request, id):
 
     out = []
     for i in data:
-        out.append('{title:"%s", start:"%s", point: {lat: %d, lon: %d}, options: { description: "opis", infoUrl: "info/id"}}' % (i['title'], i['start'], float(i['point']['lat']), float(i['point']['lon'])))
+        out.append('{title:"%s", start:"%s", point: {lat: %d, lon: %d}, options: { description: "opis", infoUrl: "%s"}}' % (i['title'], i['start'], float(i['point']['lat']), float(i['point']['lon'], i['options']['infoUrl'])))
 
     return HttpResponse('%s([%s])' % (callback, ','.join(out)))
 
