@@ -1,5 +1,6 @@
 # Create your views here.
 from datetime import datetime, timedelta
+import os
 import random
 from django.http import HttpResponse
 import urllib
@@ -30,7 +31,7 @@ def data(request, id):
     callback = request.REQUEST['callback']
     rights_list = request.session['rights_list']
     ##q = request.REQUEST['q'] <- kwerenda (np. 'mozart beethoven')
-    data = json.loads( open('/home/mikus/Projekty/hack4europe/statbrowser/hack/vis/static/json/'+request.session.get('collection_name', 'mozart')+'.json').read() )
+    data = json.loads( open(os.getcwd()+'/vis/static/json/'+request.session.get('collection_name', 'mozart')+'.json').read() )
 #    data = json.loads( open('/home/mikus/Projekty/hack4europe/statbrowser/hack/vis/static/json/mozart.json').read() )
     data = [ d for d in data if d.has_key('start') and d['start'] > start.split('-')[0] and d['start'] < end.split('-')[0] ]
     data = [ d for d in data if d.has_key('rights') and d['rights'] == rights_list[int(id)] ]
@@ -59,7 +60,8 @@ def info(request, id):
 
 
 def rights(request):
-    r_list = json.loads( open('/home/mikus/Projekty/hack4europe/statbrowser/hack/vis/static/json/'+request.session.get('collection_name', 'mozart')+'.json').read() )
+    cwd = os.getcwd()
+    r_list = json.loads( open( cwd+'/vis/static/json/'+request.session.get('collection_name', 'mozart')+'.json').read() )
     rights_set = set()
     rights_list = []
 
